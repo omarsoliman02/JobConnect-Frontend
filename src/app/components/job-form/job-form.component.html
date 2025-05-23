@@ -1,0 +1,154 @@
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <h2 class="mb-0">{{ isEditMode ? 'Edit Job' : 'Create New Job' }}</h2>
+      </div>
+      
+      <div class="card-body p-4">
+        <div *ngIf="loading" class="d-flex justify-content-center my-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error }}
+        </div>
+        
+        <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+          <div class="mb-3">
+            <label for="title" class="form-label">Job Title*</label>
+            <input type="text" id="title" formControlName="title" class="form-control" 
+                  [ngClass]="{ 'is-invalid': submitted && jobForm.get('title')?.errors }"/>
+            <div *ngIf="submitted && jobForm.get('title')?.errors" class="invalid-feedback">
+              <div *ngIf="jobForm.get('title')?.errors?.['required']">Job title is required</div>
+              <div *ngIf="jobForm.get('title')?.errors?.['minlength']">Job title must be at least 5 characters</div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Company Information*</label>
+            <div class="mb-3">
+              <label for="companyName" class="form-label">Company Name*</label>
+              <input type="text" id="companyName" formControlName="companyName" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && jobForm.get('companyName')?.errors }"/>
+              <div *ngIf="submitted && jobForm.get('companyName')?.errors" class="invalid-feedback">
+                <div *ngIf="jobForm.get('companyName')?.errors?.['required']">Company name is required</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="location" class="form-label">Location*</label>
+            <input type="text" id="location" formControlName="location" class="form-control"
+                  [ngClass]="{ 'is-invalid': submitted && jobForm.get('location')?.errors }"/>
+            <div *ngIf="submitted && jobForm.get('location')?.errors" class="invalid-feedback">
+              <div *ngIf="jobForm.get('location')?.errors?.['required']">Location is required</div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="jobType" class="form-label">Job Type*</label>
+            <select id="jobType" formControlName="jobType" class="form-select"
+                    [ngClass]="{ 'is-invalid': submitted && jobForm.get('jobType')?.errors }">
+              <option value="FULL_TIME">Full-time</option>
+              <option value="PART_TIME">Part-time</option>
+              <option value="CONTRACT">Contract</option>
+              <option value="FREELANCE">Freelance</option>
+              <option value="INTERNSHIP">Internship</option>
+            </select>
+            <div *ngIf="submitted && jobForm.get('jobType')?.errors" class="invalid-feedback">
+              <div *ngIf="jobForm.get('jobType')?.errors?.['required']">Job type is required</div>
+            </div>
+          </div>
+          
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="minSalary" class="form-label">Minimum Salary</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" id="minSalary" formControlName="minSalary" class="form-control"
+                      [ngClass]="{ 'is-invalid': submitted && jobForm.get('minSalary')?.errors }"/>
+              </div>
+              <div *ngIf="submitted && jobForm.get('minSalary')?.errors" class="invalid-feedback">
+                <div *ngIf="jobForm.get('minSalary')?.errors?.['min']">Minimum salary cannot be negative</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="maxSalary" class="form-label">Maximum Salary</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" id="maxSalary" formControlName="maxSalary" class="form-control"
+                      [ngClass]="{ 'is-invalid': submitted && jobForm.get('maxSalary')?.errors }"/>
+              </div>
+              <div *ngIf="submitted && jobForm.get('maxSalary')?.errors" class="invalid-feedback">
+                <div *ngIf="jobForm.get('maxSalary')?.errors?.['min']">Maximum salary cannot be negative</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="experienceLevel" class="form-label">Experience Level</label>
+            <select id="experienceLevel" formControlName="experienceLevel" class="form-select">
+              <option value="ENTRY_LEVEL">Entry Level</option>
+              <option value="INTERMEDIATE">Intermediate</option>
+              <option value="SENIOR">Senior</option>
+              <option value="EXECUTIVE">Executive</option>
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label for="description" class="form-label">Job Description*</label>
+            <textarea id="description" formControlName="description" class="form-control" rows="5"
+                      [ngClass]="{ 'is-invalid': submitted && jobForm.get('description')?.errors }"></textarea>
+            <div *ngIf="submitted && jobForm.get('description')?.errors" class="invalid-feedback">
+              <div *ngIf="jobForm.get('description')?.errors?.['required']">Description is required</div>
+              <div *ngIf="jobForm.get('description')?.errors?.['minlength']">Description must be at least 20 characters</div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Responsibilities*</label>
+            <div formArrayName="responsibilities">
+              <div class="mb-2 d-flex" *ngFor="let responsibility of responsibilitiesArray.controls; let i = index">
+                <input type="text" [formControlName]="i" class="form-control me-2"
+                      [ngClass]="{ 'is-invalid': submitted && responsibility.errors }"/>
+                <button type="button" class="btn btn-outline-danger" (click)="removeResponsibility(i)">
+                  &times;
+                </button>
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="addResponsibility()">
+              + Add Responsibility
+            </button>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Qualifications*</label>
+            <div formArrayName="qualifications">
+              <div class="mb-2 d-flex" *ngFor="let qualification of qualificationsArray.controls; let i = index">
+                <input type="text" [formControlName]="i" class="form-control me-2"
+                      [ngClass]="{ 'is-invalid': submitted && qualification.errors }"/>
+                <button type="button" class="btn btn-outline-danger" (click)="removeQualification(i)">
+                  &times;
+                </button>
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="addQualification()">
+              + Add Qualification
+            </button>
+          </div>
+          
+          <div class="d-flex justify-content-between mt-4">
+            <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+              {{ isEditMode ? 'Update Job' : 'Create Job' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

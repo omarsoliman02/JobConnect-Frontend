@@ -1,0 +1,184 @@
+<div class="mb-4">
+  <button (click)="goBack()" class="btn btn-outline-secondary">
+    &larr; Back to Job Details
+  </button>
+</div>
+
+<div *ngIf="loading" class="d-flex justify-content-center my-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<div *ngIf="error" class="alert alert-danger">
+  {{ error }}
+</div>
+
+<div *ngIf="success" class="alert alert-success">
+  <h4 class="alert-heading">Application Submitted!</h4>
+  <p>Your application has been successfully submitted. We will contact you soon.</p>
+  <hr>
+  <p class="mb-0">You can now <a [routerLink]="['/jobs']">browse more jobs</a> or return to the <a routerLink="/home">home page</a>.</p>
+</div>
+
+<div *ngIf="!loading && !error && !success && job">
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h2 class="mb-0">Apply for: {{ job.title }}</h2>
+    </div>
+    
+    <div class="card-body">
+      <form [formGroup]="applicationForm" (ngSubmit)="onSubmit()">
+        <h4 class="mb-3">Personal Information</h4>
+        
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="firstName" class="form-label">First Name*</label>
+            <input type="text" class="form-control" id="firstName" formControlName="firstName"
+                   [ngClass]="{ 'is-invalid': submitted && applicationForm.get('firstName')?.errors }">
+            <div *ngIf="submitted && applicationForm.get('firstName')?.errors" class="invalid-feedback">
+              <div *ngIf="applicationForm.get('firstName')?.errors?.['required']">First name is required</div>
+              <div *ngIf="applicationForm.get('firstName')?.errors?.['minlength']">First name must be at least 2 characters</div>
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <label for="lastName" class="form-label">Last Name*</label>
+            <input type="text" class="form-control" id="lastName" formControlName="lastName"
+                   [ngClass]="{ 'is-invalid': submitted && applicationForm.get('lastName')?.errors }">
+            <div *ngIf="submitted && applicationForm.get('lastName')?.errors" class="invalid-feedback">
+              <div *ngIf="applicationForm.get('lastName')?.errors?.['required']">Last name is required</div>
+              <div *ngIf="applicationForm.get('lastName')?.errors?.['minlength']">Last name must be at least 2 characters</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="email" class="form-label">Email*</label>
+            <input type="email" class="form-control" id="email" formControlName="email"
+                   [ngClass]="{ 'is-invalid': submitted && applicationForm.get('email')?.errors }">
+            <div *ngIf="submitted && applicationForm.get('email')?.errors" class="invalid-feedback">
+              <div *ngIf="applicationForm.get('email')?.errors?.['required']">Email is required</div>
+              <div *ngIf="applicationForm.get('email')?.errors?.['email']">Please enter a valid email address</div>
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <label for="phone" class="form-label">Phone Number*</label>
+            <input type="tel" class="form-control" id="phone" formControlName="phone"
+                   [ngClass]="{ 'is-invalid': submitted && applicationForm.get('phone')?.errors }">
+            <div *ngIf="submitted && applicationForm.get('phone')?.errors" class="invalid-feedback">
+              <div *ngIf="applicationForm.get('phone')?.errors?.['required']">Phone number is required</div>
+            </div>
+          </div>
+        </div>
+        
+        <h4 class="mb-3 mt-4">Work Experience</h4>
+        
+        <div formArrayName="experiences">
+          <div *ngFor="let experience of experiencesArray.controls; let i = index" class="card mb-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">Experience #{{ i + 1 }}</h5>
+              <button type="button" class="btn btn-outline-danger btn-sm" *ngIf="experiencesArray.length > 1" (click)="removeExperience(i)">
+                Remove
+              </button>
+            </div>
+            
+            <div class="card-body" [formGroupName]="i">
+              <div class="mb-3">
+                <label class="form-label">Company Name*</label>
+                <input type="text" class="form-control" formControlName="companyName"
+                       [ngClass]="{ 'is-invalid': submitted && experience.get('companyName')?.errors }">
+                <div *ngIf="submitted && experience.get('companyName')?.errors" class="invalid-feedback">
+                  <div *ngIf="experience.get('companyName')?.errors?.['required']">Company name is required</div>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Role/Position*</label>
+                <input type="text" class="form-control" formControlName="role"
+                       [ngClass]="{ 'is-invalid': submitted && experience.get('role')?.errors }">
+                <div *ngIf="submitted && experience.get('role')?.errors" class="invalid-feedback">
+                  <div *ngIf="experience.get('role')?.errors?.['required']">Role is required</div>
+                </div>
+              </div>
+              
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label class="form-label">Start Date*</label>
+                  <input type="date" class="form-control" formControlName="startDate"
+                         [ngClass]="{ 'is-invalid': submitted && experience.get('startDate')?.errors }">
+                  <div *ngIf="submitted && experience.get('startDate')?.errors" class="invalid-feedback">
+                    <div *ngIf="experience.get('startDate')?.errors?.['required']">Start date is required</div>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <label class="form-label">End Date</label>
+                  <input type="date" class="form-control" formControlName="endDate">
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" formControlName="description" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-4">
+          <button type="button" class="btn btn-outline-secondary" (click)="addExperience()">
+            + Add Another Experience
+          </button>
+        </div>
+        
+        <div class="mb-3">
+          <label for="skills" class="form-label">Skills*</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="skillSearch" 
+                   placeholder="Search for skills..." 
+                   formControlName="skillSearch"
+                   autocomplete="off">
+            <button class="btn btn-outline-secondary" type="button" [disabled]="!searchTerm || searchTerm.trim() === ''"
+                    (click)="selectSkill({name: searchTerm})">Add New</button>
+          </div>
+          <div *ngIf="searchTerm && searchTerm.trim() !== ''" class="skill-search-results">
+            <div *ngFor="let skill of filteredSkills" 
+                  class="skill-option" 
+                  (click)="selectSkill(skill)">
+              {{ skill.name }}
+            </div>
+            <div *ngIf="filteredSkills.length === 0" class="no-results">
+              No skills found. Click "Add New" to create it.
+            </div>
+          </div>
+          <div *ngIf="submitted && selectedSkills.length === 0" class="invalid-feedback d-block">
+            At least one skill is required
+          </div>
+        </div>
+        
+        <div class="selected-skills mb-4">
+          <h5>Selected Skills</h5>
+          <div class="d-flex flex-wrap gap-2">
+            <span *ngIf="selectedSkills.length === 0" class="text-muted">No skills selected</span>
+            <div *ngFor="let skill of selectedSkills" class="badge bg-primary d-flex align-items-center p-2">
+              {{ skill.name }}
+              <button type="button" class="btn-close btn-close-white ms-2" 
+                      aria-label="Remove skill" 
+                      (click)="removeSkill(skill)"></button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="d-grid gap-2 mt-4">
+          <button type="submit" class="btn btn-primary btn-lg" [disabled]="submitting">
+            <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
+            Submit Application
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,174 @@
+/* Enhanced styling for the jobs page */
+
+/* Main layout */
+.container {
+  max-width: 1200px;
+}
+
+/* Card styling */
+.card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  margin-bottom: 15px;
+  border-radius: 0.5rem;
+}
+
+.job-card {
+  border-left: 4px solid transparent;
+  
+  &:hover {
+    transform: translateY(-3px);
+    border-left-color: var(--primary-color);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Filter sidebar */
+.filter-sidebar {
+  border-radius: 0.5rem;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.filter-sidebar .card-header {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+.form-label {
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #333;
+}
+
+/* Form elements */
+.input-group {
+  margin-bottom: 0.5rem;
+}
+
+.input-group-text {
+  background-color: var(--light-color);
+  border-color: #dee2e6;
+  color: #666;
+}
+
+.form-control, .form-select {
+  border-color: #dee2e6;
+  font-size: 0.95rem;
+  padding: 0.6rem 0.8rem;
+  box-shadow: none;
+  transition: all 0.2s;
+  
+  &:focus {
+    border-color: #000;
+    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
+  }
+  
+  &::placeholder {
+    color: #aaa;
+    font-size: 0.9rem;
+  }
+}
+
+/* Badge styling */
+.badge {
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  padding: 0.4em 0.6em;
+  font-size: 0.75rem;
+}
+
+/* Job description text */
+.job-list p.text-secondary {
+  line-height: 1.5;
+  max-height: 65px;
+  overflow: hidden;
+  font-size: 0.9rem;
+  color: #555 !important;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.5rem 1.25rem;
+  
+  &.btn-primary {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  
+  &.btn-outline-secondary {
+    font-weight: 500;
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .filter-sidebar {
+    position: relative !important;
+    max-height: none;
+    margin-bottom: 2rem;
+  }
+  
+  .row.g-4 {
+    flex-direction: column;
+  }
+  
+  .col-lg-4, .col-lg-8 {
+    width: 100%;
+  }
+}
+
+/* Smaller spacing on mobile */
+@media (max-width: 768px) {
+  .card-body {
+    padding: 1rem !important;
+  }
+  
+  .filter-sidebar {
+    margin-bottom: 1.5rem;
+  }
+  
+  .job-list .card-body {
+    padding: 1rem !important;
+  }
+  
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .row.g-4 {
+    margin-left: -8px;
+    margin-right: -8px;
+  }
+}
+
+/* Animation for job cards */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.job-card {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+/* Sort select alignment fix */
+.sort-select {
+  padding-right: 2rem; /* Allow space for the arrow */
+  background-position: right 0.75rem center; /* Align arrow to the right */
+  background-size: 0.65em auto;
+  -webkit-appearance: none; /* Remove default styling on Safari */
+  -moz-appearance: none;    /* Remove default styling on Firefox */
+  appearance: none;         /* Remove default styling on modern browsers */
+}

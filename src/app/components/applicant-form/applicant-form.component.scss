@@ -1,0 +1,40 @@
+.skill-search-results {
+  position: absolute;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.skill-option {
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+.no-results {
+  padding: 0.5rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.selected-skills {
+  margin-top: 1rem;
+}
+
+.badge {
+  font-size: 0.9rem;
+  
+  .btn-close {
+    font-size: 0.6rem;
+    padding: 0.1rem;
+  }
+}

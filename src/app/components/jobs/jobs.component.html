@@ -1,0 +1,150 @@
+<div class="container py-4">
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="card border-0 shadow sticky-top filter-sidebar" style="top: 80px; z-index: 100;">
+        <div class="card-header bg-primary text-white py-3">
+          <h5 class="mb-0 d-flex align-items-center">
+            <i class="bi bi-filter me-2"></i> Search Filters
+          </h5>
+        </div>
+        <div class="card-body p-4">
+          <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+            <div class="mb-4">
+              <label for="location" class="form-label fw-bold">Location</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-geo-alt"></i></span>
+                <input type="text" class="form-control" id="location" formControlName="location"
+                  placeholder="City, State, Country...">
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="jobType" class="form-label fw-bold">Job Type</label>
+              <select class="form-select" id="jobType" formControlName="jobType">
+                <option value="">All Types</option>
+                <option value="FULL_TIME">Full-time</option>
+                <option value="PART_TIME">Part-time</option>
+                <option value="CONTRACT">Contract</option>
+                <option value="FREELANCE">Freelance</option>
+                <option value="INTERNSHIP">Internship</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-bold mb-2">Salary Range</label>
+              <div class="row g-2">
+                <div class="col-6">
+                  <div class="input-group">
+                    <span class="input-group-text bg-light">$</span>
+                    <input type="number" class="form-control" formControlName="salaryMin" placeholder="Min">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="input-group">
+                    <span class="input-group-text bg-light">$</span>
+                    <input type="number" class="form-control" formControlName="salaryMax" placeholder="Max">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="experienceLevel" class="form-label fw-bold">Experience Level</label>
+              <select class="form-select" id="experienceLevel" formControlName="experienceLevel">
+                <option value="">Any Experience</option>
+                <option value="ENTRY_LEVEL">Entry Level</option>
+                <option value="INTERMEDIATE">Intermediate</option>
+                <option value="SENIOR">Senior</option>
+                <option value="EXECUTIVE">Executive</option>
+              </select>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary py-2">
+                <i class="bi bi-search me-2"></i>Search
+              </button>
+              <button type="button" class="btn btn-outline-secondary py-2" (click)="resetFilters()">
+                <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="m-0">Job Listings</h2>
+        <div class="d-flex align-items-center">
+          <span class="me-2">Sort by:</span>
+          <select class="form-select form-select-sm sort-select" (change)="sortJobs($event)" style="width: auto;">
+            <option value="newest" selected>Newest First</option>
+            <option value="oldest">Oldest First</option>
+          </select>
+        </div>
+      </div>
+
+      <div *ngIf="loading" class="d-flex justify-content-center my-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && filteredJobs.length === 0" class="alert alert-info rounded-3 py-3">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-info-circle me-3 fs-4"></i>
+          <div>No jobs match your search criteria. Try adjusting your filters.</div>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && filteredJobs.length > 0">
+        <p class="text-secondary mb-3">Showing {{filteredJobs.length}} job listings</p>
+
+        <div class="job-list">
+          <a *ngFor="let job of filteredJobs; let i = index" [routerLink]="['/jobs', job.id]"
+            class="card job-card mb-4 text-decoration-none text-dark" [ngStyle]="{'animation-delay': i * 0.1 + 's'}"
+            style="animation: fadeIn 0.5s ease-in-out forwards;">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <h5 class="mb-1 fw-bold">{{ job.title }}</h5>
+                  <div class="mb-2">
+                    <span class="badge bg-dark me-2">{{ job.location }}</span>
+                    <span *ngIf="job.jobType || job.type" class="badge bg-secondary me-2">{{ formatJobType(job.jobType
+                      || job.type) }}</span>
+                    <span *ngIf="job.experienceLevel" class="badge bg-info text-dark me-2">{{
+                      formatExperienceLevel(job.experienceLevel) }}</span>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <small *ngIf="job.createdAt" class="text-muted d-block">Posted: {{ job.createdAt | date }}</small>
+                  <div *ngIf="job.minSalary || job.maxSalary" class="mt-1">
+                    <span class="badge bg-success">
+                      <ng-container *ngIf="job.minSalary && job.maxSalary">
+                        ${{ job.minSalary | number }} - ${{ job.maxSalary | number }}
+                      </ng-container>
+                      <ng-container *ngIf="job.minSalary && !job.maxSalary">
+                        ${{ job.minSalary | number }}+
+                      </ng-container>
+                      <ng-container *ngIf="!job.minSalary && job.maxSalary">
+                        Up to ${{ job.maxSalary | number }}
+                      </ng-container>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <p class="mb-1 text-secondary small mt-2">{{ job.description | slice:0:150 }}{{ job.description.length >
+                150 ? '...' : '' }}</p>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <small *ngIf="job.company" class="text-muted">{{ job.company.name }}</small>
+                <span class="btn btn-sm btn-outline-dark">
+                  View Details <i class="bi bi-arrow-right ms-1"></i>
+                </span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
